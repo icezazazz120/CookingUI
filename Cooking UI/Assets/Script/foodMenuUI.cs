@@ -43,8 +43,9 @@ public class foodMenuUI : MonoBehaviour
 
     void createPageIndicators()
     {
-        foreach (Transform child in pageIndicatorContainer)
-            Destroy(child.gameObject);
+        //foreach (Transform child in pageIndicatorContainer)
+        //    Destroy(child.gameObject);
+        if (donutList.Count > 0) return;
 
         donutList.Clear();
 
@@ -53,6 +54,8 @@ public class foodMenuUI : MonoBehaviour
             GameObject donut = Instantiate(donutPrefab, pageIndicatorContainer);
             donutList.Add(donut.GetComponent<RectTransform>());
         }
+
+        Canvas.ForceUpdateCanvases();
 
         // ย้าย activeDot มาที่ index 0
         if (donutList.Count > 0)
@@ -94,9 +97,18 @@ public class foodMenuUI : MonoBehaviour
 
     void updateIndicators()
     {
-        if (currentPage < donutList.Count)
+        if (currentPage < donutList.Count && donutList[currentPage] != null)
         {
             activeDot.position = donutList[currentPage].position;
         }
+    }
+
+    [System.Serializable]
+    public class FoodItem
+    {
+        public string name;      // ชื่ออาหาร
+        public Sprite icon;      // รูปภาพ
+        public int stars;        // จำนวนดาว
+
     }
 }
