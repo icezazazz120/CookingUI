@@ -1,0 +1,79 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8933bebd15fe0d74f8a1fd3d7caa349e, type: 3}
+  m_Name: FoodDatabase
+  m_EditorClassIdentifier: 
+  foods:
+  - name: "\u0E04\u0E31\u0E2A\u0E15\u0E32\u0E23\u0E4C\u0E14"
+    icon: {fileID: 5272460497130537890, guid: 74f5121d5f9e0d74b83491f8a16cdb32, type: 3}
+    stars: 1
+    requirements:
+    - ingredient:
+        name: "\u0E44\u0E02\u0E48"
+        icon: {fileID: -7017726810144505697, guid: 74f5121d5f9e0d74b83491f8a16cdb32, type: 3}
+      amount: 2
+  - name: "\u0E0B\u0E32\u0E25\u0E32\u0E40\u0E1B\u0E32"
+    icon: {fileID: 7597438314513058006, guid: 74f5121d5f9e0d74b83491f8a16cdb32, type: 3}
+    stars: 2
+    requirements:
+    - ingredient:
+        name: "\u0E1C\u0E31\u0E01"
+        icon: {fileID: 7118728946498088263, guid: 74f5121d5f9e0d74b83491f8a16cdb32, type: 3}
+      amount: 1
+    - ingredient:
+        name: "\u0E44\u0E02\u0E48"
+        icon: {fileID: -7017726810144505697, guid: 74f5121d5f9e0d74b83491f8a16cdb32, type: 3}
+      amount: 1
+    - ingredient:
+        name: "\u0E02\u0E49\u0E32\u0E27"
+        icon: {fileID: 4762871085188806276, guid: 74f5121d5f9e0d74b83491f8a16cdb32, type: 3}
+      amount: 2
+  - name: "\u0E1B\u0E32\u0E19\u0E34\u0E1B\u0E39\u0E23\u0E34"
+    icon: {fileID: -4532220280671297691, guid: 74f5121d5f9e0d74b83491f8a16cdb32, type: 3}
+    stars: 3
+    requirements:
+    - ingredient:
+        name: "\u0E1C\u0E31\u0E01"
+        icon: {fileID: 7118728946498088263, guid: 74f5121d5f9e0d74b83491f8a16cdb32, type: 3}
+      amount: 2
+    - ingredient:
+        name: "\u0E44\u0E02\u0E48"
+        icon: {fileID: -7017726810144505697, guid: 74f5121d5f9e0d74b83491f8a16cdb32, type: 3}
+      amount: 2
+    - ingredient:
+        name: "\u0E41\u0E04\u0E23\u0E2D\u0E17"
+        icon: {fileID: -4781287415766976483, guid: 74f5121d5f9e0d74b83491f8a16cdb32, type: 3}
+      amount: 4
+    - ingredient:
+        name: "\u0E02\u0E49\u0E32\u0E27"
+        icon: {fileID: 4762871085188806276, guid: 74f5121d5f9e0d74b83491f8a16cdb32, type: 3}
+      amount: 4
+  - name: "\u0E2A\u0E44\u0E1B\u0E0B\u0E35\u0E48\u0E23\u0E32\u0E40\u0E21\u0E07"
+    icon: {fileID: 1658743797329605075, guid: 74f5121d5f9e0d74b83491f8a16cdb32, type: 3}
+    stars: 3
+    requirements:
+    - ingredient:
+        name: "\u0E1C\u0E31\u0E01"
+        icon: {fileID: 7118728946498088263, guid: 74f5121d5f9e0d74b83491f8a16cdb32, type: 3}
+      amount: 2
+    - ingredient:
+        name: "\u0E44\u0E02\u0E48"
+        icon: {fileID: -7017726810144505697, guid: 74f5121d5f9e0d74b83491f8a16cdb32, type: 3}
+      amount: 2
+    - ingredient:
+        name: "\u0E41\u0E04\u0E23\u0E2D\u0E17"
+        icon: {fileID: -4781287415766976483, guid: 74f5121d5f9e0d74b83491f8a16cdb32, type: 3}
+      amount: 1
+    - ingredient:
+        name: "\u0E02\u0E49\u0E32\u0E27"
+        icon: {fileID: 4762871085188806276, guid: 74f5121d5f9e0d74b83491f8a16cdb32, type: 3}
+      amount: 2
