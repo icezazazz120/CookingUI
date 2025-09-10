@@ -6,6 +6,14 @@ public class Inventory : MonoBehaviour
 {
     public Dictionary<string, int> items = new Dictionary<string, int>();
 
+    void Start()
+    {
+        addItem("ไข่", 50);
+        addItem("ผัก", 50);
+        addItem("แครอท", 50);
+        addItem("ข้าว", 50);
+    }
+
     // เพิ่มของเข้าสต็อก
     public void addItem(string name, int amount)
     {

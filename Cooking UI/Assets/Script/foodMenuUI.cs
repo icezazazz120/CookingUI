@@ -1,6 +1,7 @@
 using UnityEngine;
 using UnityEngine.UI;
 using System.Collections.Generic;
+using System.Linq;
 
 public class foodMenuUI : MonoBehaviour
 {
@@ -23,18 +24,28 @@ public class foodMenuUI : MonoBehaviour
     private int totalPages;
 
     public FoodDatabase foodDatabase;
-    private List<FoodItem> foodItems;
+    private List<FoodItem> foodItems; 
     private List<RectTransform> donutList = new List<RectTransform>();
+    private List<FoodItem> filteredItems = new List<FoodItem>(); // filter
 
     [Header("Ingredients UI")]
     public Transform ingredientContainer;   // parent ของวัตถุดิบ
     public GameObject ingredientPrefab;     // prefab จำนวนไอคอน
 
-    public Inventory inventory;
+    [Header("Filter UI")]
+    public InputField searchInput;          // กล่องค้นหา
+    public Button starButton1;
+    public Button starButton2;
+    public Button starButton3;
 
+    private int starFilter = -1;
+
+    public Inventory inventory;
+    private FoodItem selectedFood;
     void Start()
     {
         foodItems = foodDatabase.foods;
+        filteredItems = new List<FoodItem>(foodItems);
 
         totalPages = Mathf.CeilToInt((float)foodItems.Count / itemsPerPage);
 
@@ -43,6 +54,11 @@ public class foodMenuUI : MonoBehaviour
 
         buttonPrev.onClick.AddListener(() => changePage(-1));
         buttonNext.onClick.AddListener(() => changePage(1));
+
+        searchInput.onValueChanged.AddListener(delegate { ApplyFilter(); });
+        starButton1.onClick.AddListener(() => ToggleStarFilter(1));
+        starButton2.onClick.AddListener(() => ToggleStarFilter(2));
+        starButton3.onClick.AddListener(() => ToggleStarFilter(3));
     }
 
     void createPageIndicators()
@@ -77,13 +93,12 @@ public class foodMenuUI : MonoBehaviour
 
         // แสดงเมนูใหม่
         int startIndex = currentPage * itemsPerPage;
-        int endIndex = Mathf.Min(startIndex + itemsPerPage, foodItems.Count);
+        int endIndex = Mathf.Min(startIndex + itemsPerPage, filteredItems.Count);
 
         for (int i = startIndex; i < endIndex; i++)
         {
             GameObject item = Instantiate(menuItemPrefab, gridContainer);
 
-            // เก็บ index ไว้แก้ closure bug
             int index = i;
 
             // --- ใส่ข้อมูล ---
@@ -91,14 +106,14 @@ public class foodMenuUI : MonoBehaviour
             var texts = item.GetComponentsInChildren<Text>();
             foreach (var t in texts)
             {
-                if (t.name == "NameText") t.text = foodItems[index].name;
+                if (t.name == "NameText") t.text = filteredItems[index].name;
             }
 
             // รูป
             var images = item.GetComponentsInChildren<Image>();
             foreach (var img in images)
             {
-                if (img.name == "Icon") img.sprite = foodItems[index].icon;
+                if (img.name == "Icon") img.sprite = filteredItems[index].icon;
             }
 
             // ดาว
@@ -107,7 +122,7 @@ public class foodMenuUI : MonoBehaviour
             {
                 for (int s = 0; s < starsParent.childCount; s++)
                 {
-                    starsParent.GetChild(s).gameObject.SetActive(s < foodItems[index].stars);
+                    starsParent.GetChild(s).gameObject.SetActive(s < filteredItems[index].stars);
                 }
             }
 
@@ -116,13 +131,15 @@ public class foodMenuUI : MonoBehaviour
             if (btn != null)
             {
                 btn.onClick.AddListener(() => {
-                    showIngredients(foodItems[index]);
+                    selectedFood = filteredItems[index];
+                    showIngredients(selectedFood);
                 });
             }
         }
 
         updateIndicators();
     }
+
 
     void changePage(int direction)
     {
@@ -168,6 +185,17 @@ public class foodMenuUI : MonoBehaviour
         }
     }
 
+    public void tryCook()
+    {
+        if (selectedFood == null)
+        {
+            Debug.Log("ยังไม่ได้เลือกเมนูอาหาร");
+            return;
+        }
+
+        Cook(selectedFood);
+    }
+
     public void Cook(FoodItem food)
     {
         //Debug.Log("วัตถุดิบไม่พอ");
@@ -188,5 +216,65 @@ public class foodMenuUI : MonoBehaviour
 
         Debug.Log("ทำ " + food.name + " สำเร็จ!");
         showIngredients(food); // อัพเดตจำนวน
+
+    }
+
+    void ApplyFilter()
+    {
+        string search = searchInput.text.ToLower();
+
+        if (starFilter == -1 && string.IsNullOrEmpty(search))
+        {
+            // ไม่มี filter ใด ๆ แสดงทั้งหมด
+            filteredItems = new List<FoodItem>(foodItems);
+        }
+        else
+        {
+            filteredItems = foodItems.FindAll(food =>
+            {
+                bool nameMatch = string.IsNullOrEmpty(search) || food.name.ToLower().Contains(search);
+                bool starMatch = (starFilter == -1) || (food.stars == starFilter);
+                return nameMatch && starMatch;
+            });
+        }
+
+        filteredItems = foodItems.FindAll(food =>
+        {
+            bool nameMatch = string.IsNullOrEmpty(search) || food.name.ToLower().Contains(search);
+            bool starMatch = (starFilter == -1) || (food.stars == starFilter);
+            return nameMatch && starMatch;
+        });
+
+        totalPages = Mathf.CeilToInt((float)Mathf.Max(1, filteredItems.Count) / itemsPerPage);
+        currentPage = 0;
+
+        createPageIndicators();
+
+        if (filteredItems.Count > 0)
+            showPage(0);
+        else
+            ClearMenu();
+    }
+
+    void ClearMenu()
+    {
+        foreach (Transform child in gridContainer)
+            Destroy(child.gameObject);
+    }
+
+    void ToggleStarFilter(int star)
+    {
+        if (starFilter == star)
+        {
+            // กดซ้ำ ยกเลิก filter
+            starFilter = -1;
+        }
+        else
+        {
+            // กดใหม่ เลือกดาวนั้น
+            starFilter = star;
+        }
+
+        ApplyFilter();
     }
 }
