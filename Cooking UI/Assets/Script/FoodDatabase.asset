@@ -16,6 +16,7 @@ MonoBehaviour:
   - name: "\u0E04\u0E31\u0E2A\u0E15\u0E32\u0E23\u0E4C\u0E14"
     icon: {fileID: 5272460497130537890, guid: 74f5121d5f9e0d74b83491f8a16cdb32, type: 3}
     stars: 1
+    cookTime: 10
     requirements:
     - ingredient:
         name: "\u0E44\u0E02\u0E48"
@@ -24,6 +25,7 @@ MonoBehaviour:
   - name: "\u0E0B\u0E32\u0E25\u0E32\u0E40\u0E1B\u0E32"
     icon: {fileID: 7597438314513058006, guid: 74f5121d5f9e0d74b83491f8a16cdb32, type: 3}
     stars: 2
+    cookTime: 10
     requirements:
     - ingredient:
         name: "\u0E1C\u0E31\u0E01"
@@ -40,6 +42,7 @@ MonoBehaviour:
   - name: "\u0E1B\u0E32\u0E19\u0E34\u0E1B\u0E39\u0E23\u0E34"
     icon: {fileID: -4532220280671297691, guid: 74f5121d5f9e0d74b83491f8a16cdb32, type: 3}
     stars: 3
+    cookTime: 10
     requirements:
     - ingredient:
         name: "\u0E1C\u0E31\u0E01"
@@ -60,6 +63,7 @@ MonoBehaviour:
   - name: "\u0E2A\u0E44\u0E1B\u0E0B\u0E35\u0E48\u0E23\u0E32\u0E40\u0E21\u0E07"
     icon: {fileID: 1658743797329605075, guid: 74f5121d5f9e0d74b83491f8a16cdb32, type: 3}
     stars: 3
+    cookTime: 60
     requirements:
     - ingredient:
         name: "\u0E1C\u0E31\u0E01"

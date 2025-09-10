@@ -2,6 +2,9 @@ using UnityEngine;
 using UnityEngine.UI;
 using System.Collections.Generic;
 using System.Linq;
+using System.Collections;
+using Unity.VisualScripting;
+using Spine.Unity;
 
 public class foodMenuUI : MonoBehaviour
 {
@@ -42,8 +45,30 @@ public class foodMenuUI : MonoBehaviour
 
     public Inventory inventory;
     private FoodItem selectedFood;
+
+    [Header("Animation")]
+    public SkeletonAnimation cookAnimation;
+    public string cookAnimName = "idle-boiled";
+    public bool loopAnim = false;
+
+    [Header("Cooking Timer UI")]
+    public Text timerText;       // Text แสดงเวลาที่เหลือ
+    private Coroutine cookRoutine;
+
+    [Header("Energy System")]
+    public Slider energySlider;     // แถบพลังงาน
+    public Text energyText;
+    public int maxEnergy = 30;
+    public int currentEnergy = 30;
+    public int energyPerCook = 10;
+    public float regenInterval = 5f;   // ฟื้นทุก 5 วินาที
+
+    private float regenTimer = 0f;
     void Start()
     {
+        currentEnergy = maxEnergy;
+        UpdateEnergyUI();
+
         foodItems = foodDatabase.foods;
         filteredItems = new List<FoodItem>(foodItems);
 
@@ -59,6 +84,21 @@ public class foodMenuUI : MonoBehaviour
         starButton1.onClick.AddListener(() => ToggleStarFilter(1));
         starButton2.onClick.AddListener(() => ToggleStarFilter(2));
         starButton3.onClick.AddListener(() => ToggleStarFilter(3));
+    }
+
+    void Update()
+    {
+        // ฟื้นพลังงานทีละ 1 ทุกๆ 5 วินาที
+        regenTimer += Time.deltaTime;
+        if (regenTimer >= regenInterval)
+        {
+            regenTimer = 0f;
+            if (currentEnergy < maxEnergy)
+            {
+                currentEnergy++;
+                UpdateEnergyUI();
+            }
+        }
     }
 
     void createPageIndicators()
@@ -198,7 +238,12 @@ public class foodMenuUI : MonoBehaviour
 
     public void Cook(FoodItem food)
     {
-        //Debug.Log("วัตถุดิบไม่พอ");
+        if (currentEnergy < energyPerCook)
+        {
+            Debug.Log("พลังงานไม่พอ!");
+            return;
+        }
+
         foreach (var req in food.requirements)
         {
             if (!inventory.hasEnough(req.ingredient.name, req.amount))
@@ -214,7 +259,12 @@ public class foodMenuUI : MonoBehaviour
             inventory.useItem(req.ingredient.name, req.amount);
         }
 
-        Debug.Log("ทำ " + food.name + " สำเร็จ!");
+        // หักพลังงาน
+        currentEnergy -= energyPerCook;
+        UpdateEnergyUI();
+
+        if (cookRoutine != null) StopCoroutine(cookRoutine);
+        cookRoutine = StartCoroutine(CookingProcess(food));
         showIngredients(food); // อัพเดตจำนวน
 
     }
@@ -222,21 +272,6 @@ public class foodMenuUI : MonoBehaviour
     void ApplyFilter()
     {
         string search = searchInput.text.ToLower();
-
-        if (starFilter == -1 && string.IsNullOrEmpty(search))
-        {
-            // ไม่มี filter ใด ๆ แสดงทั้งหมด
-            filteredItems = new List<FoodItem>(foodItems);
-        }
-        else
-        {
-            filteredItems = foodItems.FindAll(food =>
-            {
-                bool nameMatch = string.IsNullOrEmpty(search) || food.name.ToLower().Contains(search);
-                bool starMatch = (starFilter == -1) || (food.stars == starFilter);
-                return nameMatch && starMatch;
-            });
-        }
 
         filteredItems = foodItems.FindAll(food =>
         {
@@ -276,5 +311,57 @@ public class foodMenuUI : MonoBehaviour
         }
 
         ApplyFilter();
+    }
+
+    private IEnumerator CookingProcess(FoodItem food)
+    {
+        float timeLeft = food.cookTime;
+
+        // เล่น animation ทำอาหาร
+        if (cookAnimation != null)
+            cookAnimation.AnimationState.SetAnimation(0, cookAnimName, loopAnim);
+
+        while (timeLeft > 0)
+        {
+            timeLeft -= Time.deltaTime;
+
+            // อัพเดต UI
+            if (timerText != null)
+            {
+                int minutes = Mathf.FloorToInt(timeLeft / 60f);
+                int seconds = Mathf.CeilToInt(timeLeft % 60f);
+                timerText.text = string.Format("{0:0}:{1:00}", minutes, seconds);
+            }
+
+            yield return null;
+        }
+
+        Debug.Log("ทำ " + food.name + " เสร็จเรียบร้อย!");
+
+        if (timerText != null)
+            timerText.text = "0:00";
+
+        //  เปลี่ยน animation ตอนเสร็จ
+        if (cookAnimation != null)
+        {
+            cookAnimation.AnimationState.SetAnimation(0, "success", false);
+            cookAnimation.AnimationState.AddAnimation(0, "idle", true, 0);
+        }
+
+        //  เพิ่มอาหารเข้าคลัง
+        inventory.addItem(food.name, 1);
+    }
+
+    private void UpdateEnergyUI()
+    {
+        if (energySlider != null)
+        {
+            energySlider.maxValue = maxEnergy;
+            energySlider.value = currentEnergy;
+        }
+        if (energyText != null)
+        {
+            energyText.text = currentEnergy + "/" + maxEnergy;
+        }
     }
 }

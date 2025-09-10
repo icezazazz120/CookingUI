@@ -8,6 +8,7 @@ public class FoodItem
     public string name;
     public Sprite icon;
     public int stars;
+    public float cookTime;
 
     public List<IngredientRequirement> requirements; // วัตถุดิบที่ใช้ทำ
 }

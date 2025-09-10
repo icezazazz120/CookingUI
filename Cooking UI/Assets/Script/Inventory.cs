@@ -8,6 +8,7 @@ public class Inventory : MonoBehaviour
 
     void Start()
     {
+        // test
         addItem("‰¢Ë", 50);
         addItem("º—°", 50);
         addItem("·§√Õ∑", 50);

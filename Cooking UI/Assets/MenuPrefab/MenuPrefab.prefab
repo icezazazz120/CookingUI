@@ -264,7 +264,7 @@ GameObject:
   - component: {fileID: 7338888438986032472}
   - component: {fileID: 389115982534749343}
   m_Layer: 5
-  m_Name: GameObject
+  m_Name: MenuPrefab
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
